@@ -3,7 +3,7 @@ import java.util.Scanner;
 import java.util.Arrays;
 
 public class ex1 {
-	static final int TYPE=50;
+	static final int TYPE=8;
 	static final int PRIORITY=4;
 	static int[][] W;
 	static int N;
@@ -13,7 +13,7 @@ public class ex1 {
 		W=new int[N][N];
 		int[][] city=new int[TYPE][N];
 		int[] worth=new int[TYPE];
-		int[] index;
+		int[] index=new int[TYPE];
 		for(int i=0;i<N;i++)
 			for(int j=0;j<N;j++)
 				W[i][j]=sc.nextInt();
@@ -30,14 +30,43 @@ public class ex1 {
 					}
 			}
 		}
-		for(int i=0;i<30;i++) {
+		for(int i=0;i<10;i++) {
+			for(int j=0;j<PRIORITY/2;j++)
+				mut(city[j]);
+			
+			for(int j=PRIORITY/2;j<PRIORITY/2+2;j++) {
+				for(int k=1;k<N;k++) {
+					city[j][k]=(int)(Math.random()*(N-1))+1;
+					if(W[city[j][k-1]][city[j][k]]==0) k--;
+					else 
+						for(int l=0;l<k;l++) {
+							if(city[j][k]==city[j][l]) {
+								k--;
+								break;
+							}
+						}
+				}
+			}
 			worth=Worth(city);
-			System.out.println(min(worth));
+			System.out.println("-----"+(i+1)+"¼¼´ë-----");
+			for(int j=0;j<TYPE;j++) { 
+				for(int k=0;k<N;k++)
+					System.out.print(city[j][k]+" ");
+				System.out.println("->"+worth[j]+";");
+			}
+			
 			index=sort(worth);
 			city=gene(city[index[TYPE-1]],city[index[TYPE-2]],city[index[TYPE-3]],city[index[TYPE-4]]);
 			
+			
 		}
 
+	}
+	public static void mut(int[] city) {
+		int x;
+		x=city[N-1];
+		city[N-1]=city[N-2];
+		city[N-2]=x;
 	}
 	public static int[] Worth(int[][] a) {
 		int[] value=new int[TYPE];
@@ -56,13 +85,13 @@ public class ex1 {
 		int min=0;
 		for(int i=0;i<PRIORITY;i++) {
 			for(int j=0;j<TYPE-i-1;j++) {
-				if(worth[i]<worth[i+1]) {
-					min=worth[i];
-					worth[i]=worth[i+1];
-					worth[i+1]=min;
-					index=indexof[i];
-					indexof[i]=indexof[i+1];
-					indexof[i+1]=index;
+				if(worth[j]<worth[j+1]) {
+					min=worth[j];
+					worth[j]=worth[j+1];
+					worth[j+1]=min;
+					index=indexof[j];
+					indexof[j]=indexof[j+1];
+					indexof[j+1]=index;
 				}
 			}
 		}
